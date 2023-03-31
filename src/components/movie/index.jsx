@@ -96,7 +96,7 @@ const Movie = () => {
           <p className="text-center bg-danger alert">Loading</p>
         ) : (
           data.map((i, index) => (
-            <Item key={index} img={i.img} title={i.name} year={i.year} />
+            <Item key={index} img={i.img} title={i.name} year={i.year} id={i.objectId} />
           ))
         )}
         {/* <button

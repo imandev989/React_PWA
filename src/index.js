@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -8,10 +8,14 @@ import "./assets/css/bootstrap.rtl.min.css";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import rootReducers from "./redux/reducers";
-
-
+import { configureStore } from "@reduxjs/toolkit";
+import userReducer  from "./components/features/Users";
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const store = createStore(rootReducers);
+const store = configureStore({
+  reducer: {
+    users: userReducer,
+  },
+});
 root.render(
   <Provider store={store}>
     <React.StrictMode>

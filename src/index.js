@@ -9,11 +9,13 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 import rootReducers from "./redux/reducers";
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer  from "./components/features/Users";
+import userReducer from "./components/features/Users";
+import movieReducer from "./components/features/Movie";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const store = configureStore({
   reducer: {
     users: userReducer,
+    movies: movieReducer,
   },
 });
 root.render(

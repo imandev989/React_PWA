@@ -6,120 +6,60 @@ import Header from "../common/Header";
 import Item from "./Item";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMovie } from "../features/Movie";
 
-const data = [
-  { img: m1, title: "m1", year: "1980" },
-  { img: m2, title: "m2", year: "1990" },
-  { img: m3, title: "m3", year: "2000" },
-  { img: m4, title: "m4", year: "2020" },
-];
+// const data = [
+//   { img: m1, title: "m1", year: "1980" },
+//   { img: m2, title: "m2", year: "1990" },
+//   { img: m3, title: "m3", year: "2000" },
+//   { img: m4, title: "m4", year: "2020" },
+// ];
 
-const Movie = () => {
-  // const [button, setButton] = useState("");
-  // const [blogPosts, setBlogPosts] = useState([
-  //   { title: "a", id: 1 },
-  //   { title: "b", id: 2 },
-  // ]);
-  // const onYesPress = () => {
-  //   setButton("yes");
-  // };
-  // const onNoPress = () => {
-  //   setButton("no");
-  // };
-  // const onAddPress = () => {
-  //   setBlogPosts([...blogPosts, { title: "c", id: 3 }]);
-  // };
+function Movie() {
+  // const [data,setData]=useState([])
+  // const [loading ,setLoading]=useState(false)
+  const dispatch = useDispatch();
+  let data = useSelector((state) => state?.movies?.movieList);
 
-  // useEffect(() => {
-  //   console.log("use Effect button has been called", button);
-  // }, [button]);
-  // useEffect(() => {
-  //   console.log("use Effect blogPosts is called", blogPosts);
-  // }, [blogPosts]);
-  const [data, setData] = useState([]);
-  const [Loading, setLoading] = useState(false);
+  const loading = useSelector((state) => state?.movies?.loading);
 
-  // useEffect(() => {
-  //   fetch("https://parseapi.back4app.com/classes/film",{
-
-  //       headers:{
-  //               "X-Parse-Application-Id": "ynw5l9xJjhSfrmK6n3U6v0krZBJf6mKiVywNNKtG",
-  //       "X-Parse-REST-API-Key":"3jTFIn0TkJA22iw9uPUWvz2vIARAFKeM2VN8I2B9",
-  //           }
-  //       }).then(
-  //     (res) => {
-  //       console.log(res);
-  //       res.json().then((info) => {
-  //         console.log(info);
-  //         setData(info.results);
-  //         setLoading(false);
-  //       });
-  //     },
-  //     (error) => {
-  //       setLoading(false);
-  //       alert("error");
-  //       console.log(error);
-  //     }
-  //   );
-  // }, []);
+  console.log(loading);
+  console.log(data);
+  //in mount and pending phase data is an empty array
+  if (!Array.isArray(data)) {
+    data = data.results;
+  }
   useEffect(() => {
-    setLoading(true);
-    let config = {
-      headers: {
-        "X-Parse-Application-Id": "ynw5l9xJjhSfrmK6n3U6v0krZBJf6mKiVywNNKtG",
-        "X-Parse-REST-API-Key": "3jTFIn0TkJA22iw9uPUWvz2vIARAFKeM2VN8I2B9",
-      },
-    };
-    axios
-      .get("https://parseapi.back4app.com/classes/film", config)
-      .then(function (response) {
-        //handle success
-        console.log(response);
-        console.log(response.data.results);
-        setData(response.data.results);
-        setLoading(false);
-      })
-      .catch(function (error) {
-        //handle error
-        setLoading(false);
-
-        console.log(error);
-      });
+    if (data) {
+      dispatch(fetchMovie());
+    }
   }, []);
+
   return (
-    <div className="container">
-      <div className="row border-bottom">
-        <Header />
+    <>
+      <Header />
+      <div className="container">
+        <div className="row">
+          {loading ? (
+            <p className="loading">
+              درحال دریافت داده می باشیم لطفا منتظر بمانید
+            </p>
+          ) : data ? (
+            data.map((i, index) => (
+              <Item
+                key={index}
+                id={i.objectId}
+                img={i.img}
+                title={i.name}
+                year={i.year}
+              />
+            ))
+          ) : null}
+        </div>
       </div>
-      <div className="row">
-        {Loading ? (
-          <p className="text-center bg-danger alert">Loading</p>
-        ) : (
-          data.map((i, index) => (
-            <Item key={index} img={i.img} title={i.name} year={i.year} id={i.objectId} />
-          ))
-        )}
-        {/* <button
-          className="btn btn-success btn-small"
-          onClick={() => onYesPress()}
-        >
-          yes
-        </button>
-        <button
-          className="btn btn-danger btn-small"
-          onClick={() => onNoPress()}
-        >
-          no
-        </button>
-        <button
-          className="btn btn-warning btn-small"
-          onClick={() => onAddPress()}
-        >
-          add post
-        </button> */}
-      </div>
-    </div>
+    </>
   );
-};
+}
 
 export default Movie;

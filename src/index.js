@@ -26,6 +26,25 @@ root.render(
   </Provider>
 );
 
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/sw.js")
+    .then((res) => {
+      if (res.installing) {
+        console.log("installing service worker");
+      }
+      if (res.waiting) {
+        console.log("waiting for service worker");
+      }
+      if (res.active) {
+        console.log("active service worker");
+      }
+    })
+    .catch((rej) => {
+      console.log("rejected service worker or register has error");
+    });
+}
+
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
